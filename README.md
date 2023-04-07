@@ -1,59 +1,63 @@
-> ## ⚠️ Deprecation warning:
-> As the efforts of the GitBook team are focused on the [GitBook.com](https://www.gitbook.com) platform, the CLI is no longer under active development.  
-> All content supported by the CLI are mostly supported by our [GitBook.com / GitHub integration](https://docs.gitbook.com/getting-started/git-sync).  
-> Content hosted on the [legacy.gitbook.com](https://legacy.gitbook.com) will continue working until further notice. For differences with the new version, > check out our [documentation](https://docs.gitbook.com/v2-changes/important-differences).
-> 
-> Join our [GitHub community](https://github.com/GitbookIO/community) to stay up to date with the latest news at GitBook.
+# docker-gitbook
 
+A Docker Container for [gitbook](https://github.com/GitbookIO/gitbook). Inspired by 
 
-GitBook
-=======
+- [grahamc/docker-jekyll](https://github.com/grahamc/docker-jekyll)
+- [tobegit3hub/gitbook-server](https://github.com/tobegit3hub/gitbook-server)
+- [humangeo/gitbook-docker](https://github.com/humangeo/gitbook-docker)
 
-[![NPM version](https://badge.fury.io/js/gitbook.svg)](http://badge.fury.io/js/gitbook)
-[![Linux Build Status](https://travis-ci.org/GitbookIO/gitbook.png?branch=master)](https://travis-ci.org/GitbookIO/gitbook)
-[![Windows Build status](https://ci.appveyor.com/api/projects/status/63nlflxcwmb2pue6?svg=true)](https://ci.appveyor.com/project/GitBook/gitbook)
-[![Slack Status](https://slack.gitbook.com/badge.svg)](https://slack.gitbook.com)
+Docker Hub: <https://hub.docker.com/r/billryan/gitbook/>
 
-GitBook is a command line tool (and Node.js library) for building beautiful books using GitHub/Git and Markdown (or AsciiDoc). Here is an example: [Learn Javascript](https://legacy.gitbook.com/book/GitBookIO/javascript).
+## Usage
 
-You can publish and host books easily online using [gitbook.com](https://legacy.gitbook.com). A desktop editor is [also available](https://legacy.gitbook.com/editor).
+Read the official [GitBook Toolchain Documentation](http://toolchain.gitbook.com/) documentation [GitbookIO/gitbook](https://github.com/GitbookIO/gitbook#how-to-use-it) first.
 
-Stay updated by following [@GitBookIO](https://twitter.com/GitBookIO) on Twitter or [GitBook](https://www.facebook.com/gitbookcom) on Facebook.
+```bash
+# init
+docker run --rm -v "$PWD:/gitbook" -p 4000:4000 billryan/gitbook gitbook init
+# serve
+docker run --rm -v "$PWD:/gitbook" -p 4000:4000 billryan/gitbook gitbook serve
+# build
+docker run --rm -v "$PWD:/gitbook" -p 4000:4000 billryan/gitbook gitbook build
+```
 
-Complete documentation is available at [toolchain.gitbook.com](http://toolchain.gitbook.com/).
+For short, you can use alias for the long command line text. Place the alias statement in your `.bashrc` or `.zshrc`.
 
-![Image](https://raw.github.com/GitbookIO/gitbook/master/preview.png)
+```bash
+alias gitbook='docker run --rm -v "$PWD":/gitbook -p 4000:4000 billryan/gitbook gitbook'
+# init
+gitbook init
+# serve
+gitbook serve
+# build
+gitbook build
+# pdf output
+gitbook pdf .
+```
 
-## Getting started
+### User Priviledge
 
-GitBook can be used either on your computer for building local books or on legacy.gitbook.com for hosting them. To get started, check out [the installation instructions in the documentation](docs/setup.md).
-
-## Usage examples
-
-GitBook can be used to create book, public documentation, enterprise manual, thesis, research papers, etc.
-
-You can find a [list of real-world examples](docs/examples.md) in the documentation.
-
-## Help and Support
-
-We're always happy to help out with your books or any other questions you might have. You can ask a question on the following contact form at [gitbook.com/contact](https://legacy.gitbook.com/contact) or signal an issue on [GitHub](https://github.com/GitbookIO/gitbook).
+Since docker **can not** config uid and gid for shared volume properly(see [Issue #7198](https://github.com/docker/docker/issues/7198)), you can build it with your own uid and gid in the Dockerfile.
 
 ## Features
 
-* Write using [Markdown](http://toolchain.gitbook.com/syntax/markdown.html) or [AsciiDoc](http://toolchain.gitbook.com/syntax/asciidoc.html)
-* Output as a website or [ebook (pdf, epub, mobi)](http://toolchain.gitbook.com/ebook.html)
-* [Multi-Languages](http://toolchain.gitbook.com/languages.html)
-* [Lexicon / Glossary](http://toolchain.gitbook.com/lexicon.html)
-* [Cover](http://toolchain.gitbook.com/ebook.html)
-* [Variables and Templating](http://toolchain.gitbook.com/templating/)
-* [Content References](http://toolchain.gitbook.com/templating/conrefs.html)
-* [Plugins](http://toolchain.gitbook.com/plugins/)
-* [Beautiful default theme](https://github.com/GitbookIO/theme-default)
+Build **your favourite fonts** with GitBook(PDF, EPUB). Visit [billryan/gitbook/tags](https://hub.docker.com/r/billryan/gitbook/tags/) to see whether your favourite languages/fonts are listed here. You can also check the GitHub branch since the docker hub is automated-build from GitHub.
 
-## Publish your book
+## Contributing
 
-The platform [legacy.gitbook.com](https://legacy.gitbook.com/) is like an "Heroku for books": you can create a book on it (public, or private) and update it using **git push**.
+Wanna nice fonts for your GitBook? Here we go!
 
-## Licensing
+1. checkout a new branch named with your languages and fonts. The name of languages should follow the [List of ISO 639-2 codes](https://en.wikipedia.org/wiki/List_of_ISO_639-2_codes) and [rfc4646](http://www.ietf.org/rfc/rfc4646.txt), and the length of the name should as short as possible.
+```bash
+git checkout -b new-branch master
+```
+2. Modify the following lines with your favourite fonts.
+```bash
+# install fonts
+RUN apt-get update \
+        && apt-get install -y fonts-your-language
+```
 
-GitBook is licensed under the Apache License, Version 2.0. See [LICENSE](LICENSE) for the full license text.
+## License
+
+[The MIT License (MIT)](https://opensource.org/licenses/MIT)
